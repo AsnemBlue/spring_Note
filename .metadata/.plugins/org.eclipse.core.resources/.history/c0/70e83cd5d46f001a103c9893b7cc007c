@@ -1,0 +1,14 @@
+package com.tj.ex2;
+
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+
+@Aspect
+public class ProxyClass2 {
+	@Pointcut("within(com.tj.ex2.*)")
+	private void aroundM() {}
+	@Around("aroundM()")
+	public Object aroundAdvice(ProceedingJoinPoint joinPoint) {
+		
+	}
+}

@@ -1,0 +1,15 @@
+@charset "UTF-8";
+#wrap{
+	margin: 0 auto;
+    border: 1px solid #3684e4;
+	width:250px;
+	background-color: #b0e9ff;
+}
+p{
+	text-align: right;
+    color: #f3462a;
+}
+tr{
+	height: 40px;
+    line-height: 40px;
+ }

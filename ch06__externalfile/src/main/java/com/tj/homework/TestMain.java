@@ -1,0 +1,29 @@
+package com.tj.homework;
+
+import java.util.Scanner;
+
+import org.springframework.context.support.GenericXmlApplicationContext;
+
+
+public class TestMain {
+	public static void main(String[] args) {
+		String config = null;
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("dev? run?");
+		config = scanner.next();
+		if(!config.contentEquals("dev")) {
+			config = "run";
+		}
+		GenericXmlApplicationContext ctx =
+				new GenericXmlApplicationContext();
+		ctx.getEnvironment().setActiveProfiles(config);
+		ctx.load("homework/dev.xml","homework/run.xml");
+		ctx.refresh();
+		EnvInfo envInfo = ctx.getBean("envInfo",EnvInfo.class);
+		System.out.println("ipNum="+envInfo.getIpNum());
+		System.out.println("portNum="+envInfo.getPortNum());
+		System.out.println("userId="+envInfo.getUserId());
+		System.out.println("pw="+envInfo.getUserPw());
+		ctx.close();
+	}
+}

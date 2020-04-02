@@ -1,0 +1,10 @@
+package com.tj.ex2;
+
+import org.aspectj.lang.annotation.Aspect;
+
+@Aspect
+public class ProxyClass2 {
+	public Object aroundAdvice(ProceedingJoinPoint joinPoint) {
+		
+	}
+}

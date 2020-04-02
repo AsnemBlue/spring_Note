@@ -1,0 +1,10 @@
+@charset "UTF-8";
+#wrap{
+	margin: 0 auto;
+    border: 1px solid #3684e4;
+	width:500px;	
+}
+p{
+	text-align: right;
+    color: #f3462a;
+}

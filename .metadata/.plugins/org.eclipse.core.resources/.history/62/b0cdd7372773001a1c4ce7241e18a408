@@ -1,0 +1,22 @@
+package com.tj.ch13.service;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.ui.Model;
+
+import com.tj.ch13.dto.BoardDto;
+
+public class BWriteService implements BService {
+
+	@Override
+	public void execute(Model model) {
+		Map<String, Object> map = model.asMap(); //model안에 있는 dto와 request객체를 빼기 위한 작업
+		BoardDto dto = (BoardDto) map.get("boardDto");
+		HttpServletRequest request = (HttpServletRequest) map.get("request");
+		
+		
+	}
+
+}

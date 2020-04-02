@@ -1,0 +1,24 @@
+package com.tj.ch09.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.tj.ch09.dto.Member;
+
+@Controller
+public class BoardController {
+	@RequestMapping("board/view")
+	public String view() {
+		return "/board/view";
+		//뷰단 /WEB-INF/views/+/board/view+.jsp
+	}
+	@RequestMapping("board/content")
+	public String content(Model model) {
+		model.addAttribute("id","aaa");
+		model.addAttribute("pw","111");
+		Member member = new Member("bbb","222");
+		model.addAttribute("member","member");
+		return "/board/content";
+	}
+}

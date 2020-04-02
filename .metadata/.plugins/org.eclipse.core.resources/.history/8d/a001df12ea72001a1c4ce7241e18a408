@@ -1,0 +1,5 @@
+package com.tj.ch12.controller;
+
+public class HomeController {
+
+}

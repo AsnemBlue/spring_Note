@@ -1,0 +1,57 @@
+package com.tj.ch16;
+
+import javax.mail.Message;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+public class HomeController {
+	@Autowired
+	private JavaMailSender mailSender;
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String home() {
+		return "join";
+	}
+	@RequestMapping(value = "textMail", method = RequestMethod.GET)
+	public String textMail(String name, String mailaddr, Model model) {
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setFrom("hybrid0506@gmail.com");
+		message.setTo(mailaddr);
+		message.setSubject(name+"님 회원가입 감사합니다.");
+		String content = name+"님 회원가입 감사합니다.\n <h1>태그 안먹음</h1>";
+		message.setText(content);
+		mailSender.send(message);
+		model.addAttribute("result", "TEXT메일이 발송되었습니다.");
+		return "sendResult";
+	}
+	@RequestMapping(value = "htmlMail", method = RequestMethod.GET)
+	public String htmlMail(final String name, final String mailaddr, Model model) {
+		MimeMessagePreparator message = new MimeMessagePreparator() {
+			String content="";
+			@Override
+			public void prepare(MimeMessage mimeMessage) throws Exception {
+				mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(mailaddr));
+				mimeMessage.setFrom(new InternetAddress("hybrid0506@gmail.com"));
+				mimeMessage.setSubject(name+"님 회원가입 감사합니다.(html)");
+				mimeMessage.setText(content, "itf-8","html");
+			}
+		};
+		message.setFrom("hybrid0506@gmail.com");
+		message.setTo(mailaddr);
+		message.setSubject(name+"님 회원가입 감사합니다.");
+		String content = name+"님 회원가입 감사합니다.\n <h1>태그 안먹음</h1>";
+		message.setText(content);
+		mailSender.send(message);
+		model.addAttribute("result", "TEXT메일이 발송되었습니다.");
+		return "sendResult";
+	}
+}

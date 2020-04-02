@@ -1,0 +1,5 @@
+package com.tj.ch17_1.dao;
+
+public interface DeptDao {
+
+}

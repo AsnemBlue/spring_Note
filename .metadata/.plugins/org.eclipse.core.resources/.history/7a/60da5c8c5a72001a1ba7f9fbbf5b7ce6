@@ -1,0 +1,5 @@
+@charset "UTF-8";
+#wrap{
+	margin 0 auto;
+	width:500px;	
+}

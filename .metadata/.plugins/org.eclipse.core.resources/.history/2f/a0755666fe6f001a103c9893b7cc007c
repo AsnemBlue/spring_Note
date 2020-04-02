@@ -1,0 +1,6 @@
+package com.tj.ch09.dto;
+
+public class Member {
+	private String id;
+	private String pw;
+}

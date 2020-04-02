@@ -1,0 +1,16 @@
+package com.tj.ch13.service;
+
+import java.util.Map;
+
+import org.springframework.ui.Model;
+
+public class BListService implements BService {
+
+	@Override
+	public void execute(Model model) {
+		Map<String, Object> map = model.asMap();	//model을 map화
+		//model.addAttribute("pageNum","1");
+		String pagrNum = (String)map.get("pageNum");
+	}
+
+}

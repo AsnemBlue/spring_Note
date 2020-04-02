@@ -1,0 +1,332 @@
+package com.tj.ch13.dao;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
+import com.tj.ch13.dto.BoardDto;
+
+public class BoardDao {
+	public static final int FAIL = 0;
+	public static final int SUCCRSS = 1;
+	private static BoardDao instance = new BoardDao();
+	public static BoardDao getInstance() {
+		return instance;
+	}
+	private BoardDao() {}
+	private Connection getConnection() throws SQLException {
+		Connection conn = null;
+		try {
+			Context ctx = new InitialContext();
+			DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/Oracle11g");
+			conn = ds.getConnection();
+		} catch (NamingException e) {
+			System.out.println("Conn 예외"+e.getMessage());
+		}
+		return conn;
+	}
+	//글목록
+	public ArrayList<BoardDto> list(int startRow, int endRow){
+		ArrayList<BoardDto> dtos = new ArrayList<BoardDto>();
+		Connection 			conn  = null;
+		PreparedStatement 	pstmt = null;
+		ResultSet			rs	  = null;
+		String sql ="SELECT * FROM (SELECT ROWNUM RN, A.* FROM (SELECT * FROM MVC_BOARD ORDER BY bGROUP DESC, bSTEP) A) WHERE RN BETWEEN ? AND ?";
+		try {
+			conn = getConnection();
+			pstmt.setInt(1, startRow);
+			pstmt.setInt(2, endRow);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				int 	bid      = rs.getInt	("bid"     );
+				String 	bname    = rs.getString	("bname"   );
+				String 	btitle   = rs.getString	("btitle"  );
+				String 	bcontent = rs.getString	("bcontent");
+				Date 	bdate    = rs.getDate	("bdate"   );
+				int 	bhit     = rs.getInt	("bhit"    );
+				int 	bgroup   = rs.getInt	("bgroup"  );
+				int 	bstep    = rs.getInt	("bstep"   );
+				int 	bindent  = rs.getInt	("bindent" );
+				String 	bip      = rs.getString	("bip"     );
+				dtos.add(new BoardDto(bid, bname, btitle, bcontent, bdate, bhit, bgroup, bstep, bindent, bip));
+			}
+		} catch (SQLException e) {
+			System.out.println("글 목록 불러오기 예외"+e.getMessage());
+		} finally {
+			try {
+				if(rs	!=null) rs.close();
+				if(pstmt!=null) pstmt.close();
+				if(conn	!=null) conn.close();
+			} catch (Exception e2) {
+				System.out.println(e2.getMessage());
+			}
+		}
+		return dtos;
+	}
+	//글갯수
+	public int boardcnt() {
+		int result = FAIL;
+		Connection 			conn  = null;
+		PreparedStatement 	pstmt = null;
+		ResultSet			rs	  = null;
+		String sql ="SELECT COUNT(*) CNT FROM MVC_BOARD";
+		try {
+			conn = getConnection();
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			try {
+				if(rs	!=null) rs.close();
+				if(pstmt!=null) pstmt.close();
+				if(conn	!=null) conn.close();
+			} catch (Exception e2) {
+				System.out.println("글 개수예외"+e2.getMessage());
+			}
+		}
+		return result;
+	}
+	//글쓰기
+	public int write(BoardDto dto) {
+		int result = FAIL;
+		Connection 			conn  = null;
+		PreparedStatement 	pstmt = null;
+		String sql ="INSERT INTO MVC_BOARD (bID,bNAME,bTITLE,bCONTENT,bGROUP,bSTEP,bINDENT,bIP) " + 
+				"    VALUES (MVC_BOARD_SEQ.NEXTVAL, ?, ?,?,MVC_BOARD_SEQ.CURRVAL,0,0,?)";
+		try {
+			conn = getConnection();
+			pstmt.setString(1, dto.getBname());
+			pstmt.setString(2, dto.getBtitle());
+			pstmt.setString(3, dto.getBcontent());
+			pstmt.setString(4, dto.getBip());
+			result = pstmt.executeUpdate();
+			System.out.println(result==SUCCRSS?"글쓰기 성공":"글쓰기 실패");
+		} catch (SQLException e) {
+			System.out.println("글쓰기예외"+e.getMessage());
+		} finally {
+			try {
+				if(pstmt!=null) pstmt.close();
+				if(conn	!=null) conn.close();
+			} catch (Exception e2) {
+				System.out.println(e2.getMessage());
+			}
+		}
+		return result;
+	}
+	// 조회수 증가
+		public void hitup(int bid) {
+			Connection		  conn  = null;
+			PreparedStatement pstmt = null;
+			String sql ="UPDATE MVC_BOARD SET bHIT = bHIT+1 WHERE bID=?";
+			try {
+				conn  = getConnection();
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, bid);
+				pstmt.executeUpdate();
+			} catch (Exception e) {
+				System.out.println("조회수증가예외"+e.getMessage());
+			} finally {
+				try {
+					if(pstmt != null) pstmt .close();
+					if(conn  != null) conn  .close();
+				} catch (Exception e2) {
+					System.out.println(e2.getMessage());
+				}
+			}
+		}
+		// 글상세 보기(조회수 증가 포함)
+		public BoardDto contentView(int bid) {
+			hitup(bid);
+			BoardDto dto = null;
+			Connection		  conn  = null;
+			PreparedStatement pstmt = null;
+			ResultSet		  rs	= null;
+			String sql = "SELECT * FROM MVC_BOARD WHERE BID=?";
+			try {
+				conn  = getConnection();
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, bid);
+				rs = pstmt.executeQuery();
+				if(rs.next()) {
+					String 		bname     = rs.getString	("bname"	);
+					String 		btitle    = rs.getString	("btitle"	);
+					String 		bcontent  = rs.getString	("bcontent"	);
+					Date 		bdate     = rs.getDate		("bdate"	);
+					int 		bhit      = rs.getInt		("bhit"		);
+					int 		bgroup    = rs.getInt		("bgroup"	);
+					int 		bstep     = rs.getInt		("bstep"	);
+					int 		bindent   = rs.getInt		("bindent"	);
+					String 		bip       = rs.getString	("bip"		);
+					dto = new BoardDto(bid, bname, btitle, bcontent, bdate, bhit, bgroup, bstep, bindent, bip);
+				}
+			} catch (Exception e) {
+				System.out.println("글 상세 보기 예외"+e.getMessage());
+			} finally {
+				try {
+					if(rs	 != null) rs	.close();
+					if(pstmt != null) pstmt .close();
+					if(conn  != null) conn  .close();
+				} catch (Exception e2) {
+					System.out.println(e2.getMessage());
+				}
+			}
+			return dto;
+		}
+		
+		// 답변글 쓰기 위해 원글 dto가져오기
+		public BoardDto modifyView_replyView(int bid) {
+			BoardDto dto = null;
+			Connection		  conn  = null;
+			PreparedStatement pstmt = null;
+			ResultSet		  rs	= null;
+			String sql = "SELECT * FROM MVC_BOARD WHERE BID=?";
+			try {
+				conn  = getConnection();
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, bid);
+				rs = pstmt.executeQuery();
+				if(rs.next()) {
+					String 		bname     = rs.getString	("bname"	);
+					String 		btitle    = rs.getString	("btitle"	);
+					String 		bcontent  = rs.getString	("bcontent"	);
+					Date 		bdate     = rs.getDate		("bdate"	);
+					int 		bhit      = rs.getInt		("bhit"		);
+					int 		bgroup    = rs.getInt		("bgroup"	);
+					int 		bstep     = rs.getInt		("bstep"	);
+					int 		bindent   = rs.getInt		("bindent"	);
+					String 		bip       = rs.getString	("bip"		);
+					dto = new BoardDto(bid, bname, btitle, bcontent, bdate, bhit, bgroup, bstep, bindent, bip);
+				}
+			} catch (Exception e) {
+				System.out.println("게시판 dto가져오기 예외"+e.getMessage());
+			} finally {
+				try {
+					if(rs	 != null) rs	.close();
+					if(pstmt != null) pstmt .close();
+					if(conn  != null) conn  .close();
+				} catch (Exception e2) {
+					System.out.println(e2.getMessage());
+				}
+			}
+			return dto;
+		}
+		
+		// stepA
+		public void preReplyStepA(int bgroup, int bstep) {
+			Connection		  conn  = null;
+			PreparedStatement pstmt = null;
+			String sql ="UPDATE MVC_BOARD SET bSTEP = bSTEP+1 WHERE bSTEP>? AND bGROUP=?";
+			try {
+				conn = ds.getConnection();
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, bstep );
+				pstmt.setInt(2, bgroup);
+				pstmt.executeUpdate();
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			} finally {
+				try {
+					if(pstmt != null) pstmt .close();
+					if(conn  != null) conn  .close();
+				} catch (Exception e2) {
+					System.out.println(e2.getMessage());
+				}
+			}
+		}
+		
+		// 답변글 쓰기 -bname, btitle, bcontent, bip => bgroup, bstep, bindent
+		public int reply(String bname, String btitle, String bcontent, 
+				int bgroup, int bstep, int bindent, String bip) {
+			preReplyStepA(bgroup, bstep);
+			int result = 0;
+			Connection		  conn  = null;
+			PreparedStatement pstmt = null;
+			String sql = "INSERT INTO MVC_BOARD (bID,bNAME,bTITLE,bCONTENT,bGROUP,bSTEP,bINDENT,bIP) " + 
+						 "VALUES (MVC_BOARD_SEQ.NEXTVAL,?,?,?,?,?,?,?)";
+			try {
+				conn = ds.getConnection();
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, bname	);
+				pstmt.setString(2, btitle	);
+				pstmt.setString(3, bcontent	);
+				pstmt.setInt   (4, bgroup	);
+				pstmt.setInt   (5, bstep+1	);
+				pstmt.setInt   (6, bindent+1);
+				pstmt.setString(7, bip		);
+				result = pstmt.executeUpdate();
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			} finally {
+				try {
+					if(pstmt != null) pstmt .close();
+					if(conn  != null) conn  .close();
+				} catch (Exception e2) {
+					System.out.println(e2.getMessage());
+				}
+			}
+			return result;
+		}
+		// 글 수정하기
+		public int modify(int bid, String bname, String btitle, String bcontent, String bip) {
+			int result = 0;
+			Connection		  conn  = null;
+			PreparedStatement pstmt = null;
+			String sql = "UPDATE MVC_BOARD SET bNAME=?,bTITLE=?,bCONTENT=?,bIP=? WHERE bID=?";
+			try {
+				conn  = getConnection();
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, bname	);
+				pstmt.setString(2, btitle	);
+				pstmt.setString(3, bcontent	);
+				pstmt.setString(4, bip		);
+				pstmt.setInt   (5, bid		);
+				result = pstmt.executeUpdate();
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			} finally {
+				try {
+					if(pstmt != null) pstmt .close();
+					if(conn  != null) conn  .close();
+				} catch (Exception e2) {
+					System.out.println(e2.getMessage());
+				}
+			}
+			return result;
+		}
+		// 글 삭제
+		public int delete(int bid) {
+			int result = 0;
+			Connection		  conn  = null;
+			PreparedStatement pstmt = null;
+			String sql = "DELETE FROM MVC_BOARD WHERE BID=?";
+			try {
+				conn = ds.getConnection();
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt   (1, bid);
+				result = pstmt.executeUpdate();
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			} finally {
+				try {
+					if(pstmt != null) pstmt .close();
+					if(conn  != null) conn  .close();
+				} catch (Exception e2) {
+					System.out.println(e2.getMessage());
+				}
+			}
+			return result;
+		}
+	
+	
+}

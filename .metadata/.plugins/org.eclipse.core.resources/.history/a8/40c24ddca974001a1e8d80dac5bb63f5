@@ -1,0 +1,7 @@
+package com.tj.ch17_1.dao;
+
+import java.util.List;
+
+public class EmpDao {
+	public List<Emp> EmpList(Emp searchEmp);
+}

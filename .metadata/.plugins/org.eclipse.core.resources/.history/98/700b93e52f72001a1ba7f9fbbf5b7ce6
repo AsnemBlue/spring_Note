@@ -1,0 +1,28 @@
+package com.tj.ch10.controller;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class MyController {
+	@RequestMapping("/")
+	public String input() {
+		return "input";
+		
+	}
+	@RequestMapping("studentId/*")
+	public String studentId(HttpServletRequest request, Model model) {
+		                                                                                                          
+		//* 0자 이상의 글자.
+		//** : 0개 이상의 디렉토리 경로
+		//? : 1개 이상의 글자
+		String uri = request.getRequestURI(); // /ch10/studentId/aaa
+		String id = uri.substring(uri.lastIndexOf("/"+1));
+		model.addAttribute("id",id);
+		model.addAttribute("pw","안넘어옴");
+		return "studentId";
+	}
+}

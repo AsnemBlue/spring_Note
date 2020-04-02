@@ -1,0 +1,98 @@
+package com.tj.ch13.dto;
+
+import java.sql.Date;
+
+public class BoardDto {
+	private int 	bID     ; 
+	private String 	bNAME   ; 
+	private String 	bTITLE  ; 
+	private String 	bCONTENT; 
+	private Date 	bDATE   ; 
+	private int 	bHIT    ; 
+	private int 	bGROUP  ; 
+	private int 	bSTEP   ; 
+	private int 	bINDENT ; 
+	private String 	bIP     ;
+	
+	public BoardDto() {}
+	public BoardDto(int bID, String bNAME, String bTITLE, String bCONTENT, Date bDATE, int bHIT, int bGROUP, int bSTEP,
+			int bINDENT, String bIP) {
+		this.bID = bID;
+		this.bNAME = bNAME;
+		this.bTITLE = bTITLE;
+		this.bCONTENT = bCONTENT;
+		this.bDATE = bDATE;
+		this.bHIT = bHIT;
+		this.bGROUP = bGROUP;
+		this.bSTEP = bSTEP;
+		this.bINDENT = bINDENT;
+		this.bIP = bIP;
+	}
+	public int getbID() {
+		return bID;
+	}
+	public void setbID(int bID) {
+		this.bID = bID;
+	}
+	public String getbNAME() {
+		return bNAME;
+	}
+	public void setbNAME(String bNAME) {
+		this.bNAME = bNAME;
+	}
+	public String getbTITLE() {
+		return bTITLE;
+	}
+	public void setbTITLE(String bTITLE) {
+		this.bTITLE = bTITLE;
+	}
+	public String getbCONTENT() {
+		return bCONTENT;
+	}
+	public void setbCONTENT(String bCONTENT) {
+		this.bCONTENT = bCONTENT;
+	}
+	public Date getbDATE() {
+		return bDATE;
+	}
+	public void setbDATE(Date bDATE) {
+		this.bDATE = bDATE;
+	}
+	public int getbHIT() {
+		return bHIT;
+	}
+	public void setbHIT(int bHIT) {
+		this.bHIT = bHIT;
+	}
+	public int getbGROUP() {
+		return bGROUP;
+	}
+	public void setbGROUP(int bGROUP) {
+		this.bGROUP = bGROUP;
+	}
+	public int getbSTEP() {
+		return bSTEP;
+	}
+	public void setbSTEP(int bSTEP) {
+		this.bSTEP = bSTEP;
+	}
+	public int getbINDENT() {
+		return bINDENT;
+	}
+	public void setbINDENT(int bINDENT) {
+		this.bINDENT = bINDENT;
+	}
+	public String getbIP() {
+		return bIP;
+	}
+	public void setbIP(String bIP) {
+		this.bIP = bIP;
+	}
+	@Override
+	public String toString() {
+		return "BoardDto [bID=" + bID + ", bNAME=" + bNAME + ", bTITLE=" + bTITLE + ", bCONTENT=" + bCONTENT
+				+ ", bDATE=" + bDATE + ", bHIT=" + bHIT + ", bGROUP=" + bGROUP + ", bSTEP=" + bSTEP + ", bINDENT="
+				+ bINDENT + ", bIP=" + bIP + "]";
+	} 
+	
+}

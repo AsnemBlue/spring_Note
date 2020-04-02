@@ -1,0 +1,33 @@
+@CHARSET "UTF-8";
+body{background-color: #f1f1f1;}
+table{ border: #4c6db0 solid 2px; margin: 10px auto; background-color:#6495ED; width:1000px;}
+tr {background-color: #87CEFA; }
+tr:HOVER {
+ 	background-color: #6495ED;
+ 	cursor: pointer;
+ }
+td, th { text-align:center;  padding: 5px;}
+caption { font-size: 25px; }
+h2  b{text-align: cetner; color:red;}
+a {text-decoration: none; color:black;}
+.left{text-align: left;}
+.paging{text-align: center;}
+.btn_arrow, .btn_page, .btn_page_now, .btn_admin{
+	outline: none;
+	text-decoration: none;
+	cursor: pointer;
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	box-sizing: border-box;
+	text-align: center;
+	border: 1px solid #e6e6e6;
+	font-size: 20px;
+	line-height: 38px;
+	color: #42a0ff;
+	border-color: #0080ff;
+}
+.btn_page_now{
+	background-color: #42a0ff;
+	color: white;
+}      

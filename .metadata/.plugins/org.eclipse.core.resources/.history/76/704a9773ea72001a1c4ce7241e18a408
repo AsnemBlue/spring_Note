@@ -1,0 +1,13 @@
+package com.tj.ch12.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class HomeController {
+	@RequestMapping(value = "inputForm" , method=RequestMethod.GET)
+	public String memberInput() {
+		return "inputForm";
+	}
+
+}

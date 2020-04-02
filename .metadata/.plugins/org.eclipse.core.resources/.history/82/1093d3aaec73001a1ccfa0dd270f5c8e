@@ -1,0 +1,18 @@
+package com.tj.ch15.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+public class FileConroller {
+	@RequestMapping(value="fileInput", method = RequestMethod.GET)
+	public String fileInput() {
+		return "fileInput";
+	}
+	@RequestMapping(value="fileUpload", method = RequestMethod.POST)
+	public String fileUpload() {
+		
+		return "fileResult";
+	}
+}

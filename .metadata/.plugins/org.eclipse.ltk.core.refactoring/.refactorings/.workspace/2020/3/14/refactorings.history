@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;com.tj.ch10&apos; to &apos;ch10_formdata&apos;" description="Rename resource &apos;com.tj.ch10&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/com.tj.ch10" name="ch10_formdata" stamp="1585528608616" updateReferences="true"/>
+</session>
